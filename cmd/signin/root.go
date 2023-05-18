@@ -29,12 +29,10 @@ func init() {
 
 // Execute starts the CLI execution
 func Execute() {
-	err := cfg.Instance().Load()
-	if err == nil {
-		err = rootCmd.Execute()
-	}
 
-	if err != nil {
+	cfg.Instance().Load()
+
+	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error processing command :  %s\n", err)
 		os.Exit(1)
 
