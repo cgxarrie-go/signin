@@ -16,6 +16,9 @@ var cancelBooking = &cobra.Command{
 	Aliases: []string{"c"},
 	Short:   "cancel a desk reservation",
 	Args:    cobra.ExactArgs(1),
+	Example: fmt.Sprintf("signin cancel <ReservationID>\n" +
+		"signin cancel 57387ghf8\n" +
+		"signin c 57387ghf8"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		ctx := context.Background()

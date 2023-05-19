@@ -22,8 +22,11 @@ var (
 var listBookingsCmd = &cobra.Command{
 	Use:     "list-bookings",
 	Aliases: []string{"lb"},
-	Short:   "book a desk",
+	Short:   "list the active user bookings until a given date",
 	Args:    cobra.ExactArgs(1),
+	Example: fmt.Sprintf("signin list-bookings <Date in YYYYMMDD>\n" +
+		"signin list-bookings 20230901\n" +
+		"signin lb 20230901"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		ctx := context.Background()
 

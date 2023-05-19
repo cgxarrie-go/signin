@@ -16,6 +16,9 @@ var bookCmd = &cobra.Command{
 	Aliases: []string{"b"},
 	Short:   "book a desk",
 	Args:    cobra.ExactArgs(2),
+	Example: fmt.Sprintf("signin book <DeskNumber> <Date YYYYMMDD>\n" +
+		"signin book 59 20230524\n" +
+		"signin b 59 20230524"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		ctx := context.Background()

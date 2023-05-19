@@ -1,6 +1,8 @@
 package config
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 
 	appcfg "github.com/cgxarrie-go/signin/config"
@@ -11,6 +13,8 @@ var bearerCmd = &cobra.Command{
 	Use:   "bearer",
 	Short: "set the signin Bearer",
 	Args:  cobra.ExactArgs(1),
+	Example: fmt.Sprintf("signin config bearer <value>\n" +
+		"signin config bearer YOUR_BEARER"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		err := runBearerCmd(args)
 		return err
