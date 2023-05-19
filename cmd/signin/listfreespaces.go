@@ -15,8 +15,11 @@ import (
 var listFreeSpacesCmd = &cobra.Command{
 	Use:     "list-free",
 	Aliases: []string{"lf"},
-	Short:   "book a desk",
+	Short:   "lists all the fre spaces in a given date",
 	Args:    cobra.ExactArgs(1),
+	Example: fmt.Sprintf("signin list-free <Date in YYYYMMDD>\n" +
+		"signin list-free 20230901\n" +
+		"signin lf 20230901"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		ctx := context.Background()
