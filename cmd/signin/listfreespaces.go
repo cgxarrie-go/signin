@@ -3,13 +3,13 @@ package signin
 import (
 	"context"
 	"fmt"
-	"strings"
 
 	"github.com/spf13/cobra"
 
 	"github.com/cgxarrie-go/signin/config"
 	"github.com/cgxarrie-go/signin/pkg/service"
 	"github.com/cgxarrie-go/signin/pkg/signin"
+	"github.com/cgxarrie-go/signin/ui"
 )
 
 var listFreeSpacesCmd = &cobra.Command{
@@ -36,42 +36,18 @@ var listFreeSpacesCmd = &cobra.Command{
 			return fmt.Errorf("calling service ListFreeSpaces: %w", err)
 		}
 
-		printLisFreeSpacesTitle()
-
-		format := getListFreeSpacesColumnLineFormat()
-		for _, v := range resp {
-			printListFreeSpacesInfo(format, v)
+		desks := make([]ui.Desk, len(resp))
+		for i, r := range resp {
+			desk := ui.Desk{
+				ID:       r.ID,
+				Name:     r.DeskName,
+				ZoneName: r.ZoneName,
+			}
+			desks[i] = desk
 		}
+
+		ui.Instance().PrintDesks(desks)
 
 		return nil
 	},
-}
-
-func printLisFreeSpacesTitle() {
-	format := getListFreeSpacesColumnTitleFormat()
-	head := fmt.Sprintf(format, "ID", "Office", "Desk")
-	line := strings.Repeat("-", len(head)+5)
-
-	fmt.Println(head)
-	fmt.Println(line)
-}
-
-func printListFreeSpacesInfo(format string,
-	item service.ListFreeSpacesResponseItem) {
-	info := fmt.Sprintf(format, item.ID,
-		item.SiteName, item.DeskName)
-
-	fmt.Println(info)
-}
-
-func getListFreeSpacesColumnLineFormat() string {
-	return "%" + fmt.Sprintf("%d", idColLength) + "s " +
-		"| %" + fmt.Sprintf("%d", deskColLength) + "s " +
-		"| %" + fmt.Sprintf("%d", siteColLength) + "s "
-}
-
-func getListFreeSpacesColumnTitleFormat() string {
-	return "%" + fmt.Sprintf("%d", idColLength) + "s " +
-		"| %" + fmt.Sprintf("%d", deskColLength) + "s " +
-		"| %" + fmt.Sprintf("%d", siteColLength) + "s "
 }

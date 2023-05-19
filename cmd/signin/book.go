@@ -9,6 +9,7 @@ import (
 	"github.com/cgxarrie-go/signin/config"
 	"github.com/cgxarrie-go/signin/pkg/service"
 	"github.com/cgxarrie-go/signin/pkg/signin"
+	"github.com/cgxarrie-go/signin/ui"
 )
 
 var bookCmd = &cobra.Command{
@@ -36,7 +37,17 @@ var bookCmd = &cobra.Command{
 			return fmt.Errorf("calling service BookSpace: %w", err)
 		}
 
-		fmt.Printf("%+v", resp)
+		booking := ui.Booking{
+			ID: resp.ID,
+			Desk: ui.Desk{
+				ID:       resp.DeskID,
+				Name:     resp.DeskName,
+				ZoneName: resp.ZoneName,
+			},
+			Date: resp.Date,
+		}
+
+		ui.Instance().PrintBooking(booking)
 
 		return nil
 	},

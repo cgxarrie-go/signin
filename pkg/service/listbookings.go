@@ -20,8 +20,9 @@ type ListBookingsResponse []ListBookingsResponseItem
 type ListBookingsResponseItem struct {
 	ID       int
 	Date     time.Time
+	DeskID   string
 	DeskName string
-	SiteName string
+	ZoneName string
 }
 
 // ListBookings list my bookings from today on
@@ -79,8 +80,9 @@ func (s service) getListBookingItems(ctx context.Context, from, to time.Time) (
 		r := ListBookingsResponseItem{
 			ID:       v.ID,
 			Date:     v.Date,
+			DeskID:   v.Space.ID,
 			DeskName: v.Space.Name,
-			SiteName: v.Space.Zones[0].Name,
+			ZoneName: v.Space.Zones[0].Name,
 		}
 
 		resp = append(resp, r)
