@@ -35,7 +35,9 @@ var cancelBooking = &cobra.Command{
 			return fmt.Errorf("calling service BookSpace: %w", err)
 		}
 
-		fmt.Printf("Booking cancelled")
+		fmt.Println("---------------------")
+		fmt.Println("Booking cancelled")
+		fmt.Println("---------------------")
 
 		return nil
 	},

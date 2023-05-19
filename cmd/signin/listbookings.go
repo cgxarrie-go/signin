@@ -3,20 +3,13 @@ package signin
 import (
 	"context"
 	"fmt"
-	"strings"
 
 	"github.com/spf13/cobra"
 
 	"github.com/cgxarrie-go/signin/config"
 	"github.com/cgxarrie-go/signin/pkg/service"
 	"github.com/cgxarrie-go/signin/pkg/signin"
-)
-
-var (
-	idColLength   int = 10
-	dateColLength int = 25
-	deskColLength int = 25
-	siteColLength int = 10
+	"github.com/cgxarrie-go/signin/ui"
 )
 
 var listBookingsCmd = &cobra.Command{
@@ -42,43 +35,22 @@ var listBookingsCmd = &cobra.Command{
 			return fmt.Errorf("calling service ListBookings: %w", err)
 		}
 
-		printListBookingTitle()
+		bookings := make([]ui.Booking, len(resp))
+		for i, r := range resp {
+			booking := ui.Booking{
+				ID: r.ID,
+				Desk: ui.Desk{
+					ID:       r.DeskID,
+					Name:     r.DeskName,
+					ZoneName: r.ZoneName,
+				},
+				Date: r.Date,
+			}
 
-		format := getListBookingColumnLineFormat()
-		for _, v := range resp {
-			printListBookingInfo(format, v)
+			bookings[i] = booking
 		}
 
+		ui.Instance().PrintBookings(bookings)
 		return nil
 	},
-}
-
-func printListBookingTitle() {
-	format := getListBookingColumnTitleFormat()
-	head := fmt.Sprintf(format, "ID", "Date", "Office", "Desk")
-	line := strings.Repeat("-", len(head)+5)
-
-	fmt.Println(head)
-	fmt.Println(line)
-}
-
-func printListBookingInfo(format string, item service.ListBookingsResponseItem) {
-	info := fmt.Sprintf(format, item.ID, item.Date.Format("2006-01-02"),
-		item.SiteName, item.DeskName)
-
-	fmt.Println(info)
-}
-
-func getListBookingColumnLineFormat() string {
-	return "%" + fmt.Sprintf("%d", idColLength) + "d " +
-		"| %" + fmt.Sprintf("%d", dateColLength) + "s " +
-		"| %" + fmt.Sprintf("%d", deskColLength) + "s " +
-		"| %" + fmt.Sprintf("%d", siteColLength) + "s "
-}
-
-func getListBookingColumnTitleFormat() string {
-	return "%" + fmt.Sprintf("%d", idColLength) + "s " +
-		"| %" + fmt.Sprintf("%d", dateColLength) + "s " +
-		"| %" + fmt.Sprintf("%d", deskColLength) + "s " +
-		"| %" + fmt.Sprintf("%d", siteColLength) + "s "
 }

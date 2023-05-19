@@ -20,7 +20,7 @@ type ListFreeSpacesResponse []ListFreeSpacesResponseItem
 type ListFreeSpacesResponseItem struct {
 	ID       string
 	DeskName string
-	SiteName string
+	ZoneName string
 }
 
 // ListFreeSpaces list free desks for a given date
@@ -48,7 +48,7 @@ func (s service) ListFreeSpaces(ctx context.Context, req ListFreeSpacesRequest) 
 		r := ListFreeSpacesResponseItem{
 			ID:       v.ID,
 			DeskName: v.Name,
-			SiteName: v.Zones[0].Name,
+			ZoneName: v.Zones[0].Name,
 		}
 
 		resp = append(resp, r)

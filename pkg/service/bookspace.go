@@ -23,7 +23,7 @@ type BookSpaceResponse struct {
 	DeskID   string
 	DeskName string
 	ZoneName string
-	Date     string
+	Date     time.Time
 }
 
 // BookSpace book a desk
@@ -79,7 +79,7 @@ func (s service) BookSpace(ctx context.Context, req BookSpaceRequest) (resp Book
 		DeskID:   clientResponse.Space.ID,
 		DeskName: clientResponse.Space.Name,
 		ZoneName: clientResponse.Space.Zones[0].Name,
-		Date:     clientResponse.EndDate.Format("2006-01-02"),
+		Date:     clientResponse.EndDate,
 	}
 
 	return resp, nil
