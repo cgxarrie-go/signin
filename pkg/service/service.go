@@ -8,7 +8,7 @@ import (
 
 type Service interface {
 	BookSpace(ctx context.Context, req BookSpaceRequest) (
-		resp BookSpaceResponse, err error)
+		resp []BookSpaceResponse, err error)
 	CancelBooking(ctx context.Context, req CancelBookingRequest) error
 	ListFreeSpaces(ctx context.Context, req ListFreeSpacesRequest) (
 		resp ListFreeSpacesResponse, err error)

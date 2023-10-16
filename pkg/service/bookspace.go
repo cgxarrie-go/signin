@@ -14,7 +14,7 @@ import (
 // BookSpaceRequest .
 type BookSpaceRequest struct {
 	DeskNumber string
-	Date       string
+	Dates      []string
 }
 
 // BookSpaceResponse .
@@ -27,18 +27,29 @@ type BookSpaceResponse struct {
 }
 
 // BookSpace book a desk
-func (s service) BookSpace(ctx context.Context, req BookSpaceRequest) (resp BookSpaceResponse,
-	err error) {
+func (s service) BookSpace(ctx context.Context, req BookSpaceRequest) (
+	resp []BookSpaceResponse, err error) {
 
 	deskNum, err := strconv.Atoi(req.DeskNumber)
 	if err != nil {
 		return resp, fmt.Errorf("invalid desk number : %s", req.DeskNumber)
 	}
 
-	date, err := util.DateFromString(req.Date)
-	if err != nil {
-		return resp, err
+	for _, reqDate := range req.Dates {
+		date, err := util.DateFromString(reqDate)
+		if err != nil {
+			return resp, err
+		}
+
+		r, err := s.bookSpaceForOneDate(ctx, deskNum, date)
+		resp = append(resp, r)
 	}
+
+	return resp, nil
+}
+
+func (s service) bookSpaceForOneDate(ctx context.Context, deskNum int,
+	date time.Time) (resp BookSpaceResponse, err error) {
 
 	endDate := date.Add(21 * time.Hour).
 		Add(59 * time.Minute).
