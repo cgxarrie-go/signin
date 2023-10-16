@@ -16,10 +16,9 @@ var bookCmd = &cobra.Command{
 	Use:     "book",
 	Aliases: []string{"b"},
 	Short:   "book a desk",
-	Args:    cobra.ExactArgs(2),
-	Example: fmt.Sprintf("signin book <DeskNumber> <Date YYYYMMDD>\n" +
-		"signin book 59 20230524\n" +
-		"signin b 59 20230524"),
+	Example: fmt.Sprintf("signin book <DeskNumber> <Date YYYYMMDD> <Date YYYYMMDD> ...\n" +
+		"signin book 59 20230524 20230525 ...\n" +
+		"signin b 59 20230524 20230525 ..."),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		ctx := context.Background()
@@ -29,7 +28,7 @@ var bookCmd = &cobra.Command{
 
 		req := service.BookSpaceRequest{
 			DeskNumber: args[0],
-			Date:       args[1],
+			Dates:      args[1:],
 		}
 
 		resp, err := svc.BookSpace(ctx, req)
@@ -37,17 +36,21 @@ var bookCmd = &cobra.Command{
 			return fmt.Errorf("calling service BookSpace: %w", err)
 		}
 
-		booking := ui.Booking{
-			ID: resp.ID,
-			Desk: ui.Desk{
-				ID:       resp.DeskID,
-				Name:     resp.DeskName,
-				ZoneName: resp.ZoneName,
-			},
-			Date: resp.Date,
+		bookings := []ui.Booking{}
+		for _, item := range resp {
+			booking := ui.Booking{
+				ID: item.ID,
+				Desk: ui.Desk{
+					ID:       item.DeskID,
+					Name:     item.DeskName,
+					ZoneName: item.ZoneName,
+				},
+				Date: item.Date,
+			}
+			bookings = append(bookings, booking)
 		}
 
-		ui.Instance().PrintBooking(booking)
+		ui.Instance().PrintBookings(bookings)
 
 		return nil
 	},
