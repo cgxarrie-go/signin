@@ -26,24 +26,25 @@ signin b <desk-number> <date>
 
 samples
 ```
-signin book 59 20230524       // book desk number 59 for May 24th, 2023
-signin b 4 20230601           // book desk number 4 for June 1st, 2023
+signin book 59 20230524                          // book desk number 59 for May 24th, 2023
+signin b 4 20230601                              // book desk number 4 for June 1st, 2023
+signin b 32 20230601 20230602 20230603           // book desk number 4 for June 1st, 2023, June 2nd, 2023 and June 3rd, 2023
 ```
 
 ### cancel booking
-Cancels a previouslny registered booking
+Cancels a previouslny registered booking for a specific date
 
 command
 ```
-signin cancel <booking-id>
-signin c <booking-id>
+signin cancel <date>
+signin c <date>
 ```
  - booking-id : ID of the booking to cancel
 
 samples
 ```
-signin cancel 73456598273       // cancel booking with ID 73456598273
-signin c 998659                 // cancel booking with ID 998659
+signin cancel 20230601       // cancel booking for June 1st, 2023
+signin c 20230601            // cancel booking for June 1st, 2023
 ```
 [back to top](#signin)
 
@@ -105,5 +106,5 @@ signin config bearer <bearer>
 samples
 ```
 signin config bearer my-app-bearer          // set the bearer as my-app-bearer
-```
 [back to top](#signin)
+```
