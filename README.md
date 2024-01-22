@@ -80,7 +80,7 @@ signin lb <date>
 samples
 ```
 signin list-bookings 20230524          // list bookings from now until  May 24th, 2023
-signin lf 20230601                     // list bookings from now until June 1st, 2023
+signin lb 20230601                     // list bookings from now until June 1st, 2023
 ```
 [back to top](#signin)
 
