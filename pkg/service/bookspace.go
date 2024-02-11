@@ -42,6 +42,9 @@ func (s service) BookSpace(ctx context.Context, req BookSpaceRequest) (
 		}
 
 		r, err := s.bookSpaceForOneDate(ctx, deskNum, date)
+		if err != nil {
+			return resp, fmt.Errorf("booking desk for date %s: %w", reqDate, err)
+		}
 		resp = append(resp, r)
 	}
 
