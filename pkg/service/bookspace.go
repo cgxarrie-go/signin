@@ -54,7 +54,8 @@ func (s service) BookSpace(ctx context.Context, req BookSpaceRequest) (
 func (s service) bookSpaceForOneDate(ctx context.Context, deskNum int,
 	date time.Time) (resp BookSpaceResponse, err error) {
 
-	endDate := date.Add(21 * time.Hour).
+	endDate := date.
+		Add(22 * time.Hour).
 		Add(59 * time.Minute).
 		Add(59 * time.Second)
 
