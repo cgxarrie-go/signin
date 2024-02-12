@@ -28,7 +28,8 @@ samples
 ```
 signin book 59 20230524                          // book desk number 59 for May 24th, 2023
 signin b 4 20230601                              // book desk number 4 for June 1st, 2023
-signin b 32 20230601 20230602 20230603           // book desk number 4 for June 1st, 2023, June 2nd, 2023 and June 3rd, 2023
+signin b 32 20230601 20230602 20230603           // book desk number 32 for June 1st, 2023, June 2nd, 2023 and June 3rd, 2023
+signin b 59 3 20230601                           // book desk number 9¡59 for 3 consecutive days starting June 1st, 2023
 ```
 
 ### cancel booking

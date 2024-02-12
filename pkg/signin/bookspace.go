@@ -10,13 +10,13 @@ import (
 )
 
 type BookSpaceRequest struct {
-	SiteID    int       `json:"site_id"`
-	SpaceID   string    `json:"space_id"`
-	Occupancy int       `json:"occupancy"`
-	StartDate time.Time `json:"start_date"`
-	EndDate   time.Time `json:"end_date"`
-	Note      string    `json:"note"`
-	SendMail  bool      `json:"send_confirmation_email"`
+	SiteID    int    `json:"site_id"`
+	SpaceID   string `json:"space_id"`
+	Occupancy int    `json:"occupancy"`
+	StartDate string `json:"start_date"`
+	EndDate   string `json:"end_date"`
+	Note      string `json:"note"`
+	SendMail  bool   `json:"send_confirmation_email"`
 }
 
 type BookSpaceRespnse struct {

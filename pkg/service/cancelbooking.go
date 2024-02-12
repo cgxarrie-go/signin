@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/cgxarrie-go/signin/pkg/signin"
 	"github.com/cgxarrie-go/signin/pkg/util"
@@ -17,15 +16,12 @@ type CancelBookingRequest struct {
 // CancelBooking cancel reservation
 func (s service) CancelBooking(ctx context.Context, req CancelBookingRequest) error {
 
-	endDate, err := util.DateFromString(req.Date)
+	date, err := util.DateFromString(req.Date)
 	if err != nil {
 		return fmt.Errorf("invalid date: %w", err)
 	}
 
-	now := time.Now()
-	startDate := time.Date(now.Year(), now.Month(), now.Day(), 22, 0, 0, 0,
-		now.Location())
-	items, err := s.getListBookingItems(ctx, startDate, endDate)
+	items, err := s.getListBookingItems(ctx, date, date)
 	if err != nil {
 		return fmt.Errorf("getting date bookings: %w", err)
 	}
