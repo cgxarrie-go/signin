@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"time"
 )
@@ -212,8 +213,13 @@ func (r *request) decodeResponse(resp *http.Response) (err error) {
 
 	if r.shouldVerifySatusCode &&
 		resp.StatusCode != r.expectedStatusCode {
-		return fmt.Errorf("%s expected code %d, got %d", r.url,
-			r.expectedStatusCode, resp.StatusCode)
+		body, err := io.ReadAll(resp.Body)
+		msg := string(body)
+		if err != nil {
+			msg = fmt.Sprintf("cannot read response body: %s", err)
+		}
+		return fmt.Errorf("%s expected code %d, got %d - message: %s", r.url,
+			r.expectedStatusCode, resp.StatusCode, msg)
 	}
 
 	if r.shouldReturnResponseHeaders {
