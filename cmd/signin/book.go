@@ -3,12 +3,14 @@ package signin
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/spf13/cobra"
 
 	"github.com/cgxarrie-go/signin/config"
 	"github.com/cgxarrie-go/signin/pkg/service"
 	"github.com/cgxarrie-go/signin/pkg/signin"
+	"github.com/cgxarrie-go/signin/pkg/util"
 	"github.com/cgxarrie-go/signin/ui"
 )
 
@@ -28,7 +30,15 @@ var bookCmd = &cobra.Command{
 
 		req := service.BookSpaceRequest{
 			DeskNumber: args[0],
-			Dates:      args[1:],
+			Dates:      make([]time.Time, len(args[1:])),
+		}
+
+		for i, v := range args[1:] {
+			date, err := util.DateFromString(v)
+			if err != nil {
+				fmt.Printf("Error! %s\n", err.Error())
+			}
+			req.Dates[i] = date
 		}
 
 		resp, err := svc.BookSpace(ctx, req)

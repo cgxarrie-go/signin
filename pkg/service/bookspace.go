@@ -8,13 +8,12 @@ import (
 
 	"github.com/cgxarrie-go/signin/config"
 	"github.com/cgxarrie-go/signin/pkg/signin"
-	"github.com/cgxarrie-go/signin/pkg/util"
 )
 
 // BookSpaceRequest .
 type BookSpaceRequest struct {
 	DeskNumber string
-	Dates      []string
+	Dates      []time.Time
 }
 
 // BookSpaceResponse .
@@ -36,14 +35,15 @@ func (s service) BookSpace(ctx context.Context, req BookSpaceRequest) (
 	}
 
 	for _, reqDate := range req.Dates {
-		date, err := util.DateFromString(reqDate)
 		if err != nil {
 			return resp, err
 		}
 
-		r, err := s.bookSpaceForOneDate(ctx, deskNum, date)
+		r, err := s.bookSpaceForOneDate(ctx, deskNum, reqDate)
 		if err != nil {
-			return resp, fmt.Errorf("booking desk for date %s: %w", reqDate, err)
+			r.Date = reqDate
+			r.DeskName = req.DeskNumber
+			r.ZoneName = err.Error()
 		}
 		resp = append(resp, r)
 	}
