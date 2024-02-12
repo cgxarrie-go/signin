@@ -3,6 +3,7 @@ package signin
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -28,17 +29,15 @@ var bookCmd = &cobra.Command{
 		client := signin.NewClient(config.Instance().Bearer)
 		svc := service.New(client)
 
-		req := service.BookSpaceRequest{
-			DeskNumber: args[0],
-			Dates:      make([]time.Time, len(args[1:])),
+		items, dates, err := parseArgs(args[1:])
+		if err != nil {
+			return err
 		}
 
-		for i, v := range args[1:] {
-			date, err := util.DateFromString(v)
-			if err != nil {
-				fmt.Printf("Error! %s\n", err.Error())
-			}
-			req.Dates[i] = date
+		req := service.BookSpaceRequest{
+			DeskNumber: args[0],
+			Items:      items,
+			Dates:      dates,
 		}
 
 		resp, err := svc.BookSpace(ctx, req)
@@ -64,4 +63,37 @@ var bookCmd = &cobra.Command{
 
 		return nil
 	},
+}
+
+func parseArgs(args []string) (items int, dates []time.Time, err error) {
+
+	items, err = strconv.Atoi(args[0])
+	if err == nil { // arg is a number
+		if len(args) != 2 {
+			return items, dates, fmt.Errorf("invalid number of arguments")
+		}
+
+		date, err := util.DateFromString(args[1])
+		if err != nil {
+			fmt.Printf("Error! %s\n", err.Error())
+		}
+
+		dates = []time.Time{
+			date,
+		}
+
+		return items, dates, nil
+
+	}
+
+	dates = make([]time.Time, len(args))
+	for i, v := range args {
+		date, err := util.DateFromString(v)
+		if err != nil {
+			fmt.Printf("Error! %s\n", err.Error())
+		}
+		dates[i] = date
+	}
+
+	return 1, dates, nil
 }

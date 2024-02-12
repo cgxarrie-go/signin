@@ -13,6 +13,7 @@ import (
 // BookSpaceRequest .
 type BookSpaceRequest struct {
 	DeskNumber string
+	Items      int
 	Dates      []time.Time
 }
 
@@ -32,6 +33,11 @@ func (s service) BookSpace(ctx context.Context, req BookSpaceRequest) (
 	deskNum, err := strconv.Atoi(req.DeskNumber)
 	if err != nil {
 		return resp, fmt.Errorf("invalid desk number : %s", req.DeskNumber)
+	}
+
+	for i := 0; i < req.Items-1; i++ {
+		d := req.Dates[0].AddDate(0, 0, i+1)
+		req.Dates = append(req.Dates, d)
 	}
 
 	for _, reqDate := range req.Dates {
