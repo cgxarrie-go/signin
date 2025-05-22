@@ -72,14 +72,14 @@ var attendanceCmd = &cobra.Command{
 
 func parseAttendanceArgs(args []string) (weeks int, err error) {
 
-	weeks, err = strconv.Atoi(args[0])
-	if err == nil { // arg is a number
-		if len(args) != 1 {
-			return weeks, fmt.Errorf("invalid number of arguments")
-		}
-
-		return weeks, nil
+	if len(args) == 0 {
+		return 12, nil
 	}
 
-	return 6, nil
+	weeks, err = strconv.Atoi(args[0])
+	if err != nil {
+		return 0, fmt.Errorf("parsing weeks: %w", err)
+	}
+
+	return weeks, nil
 }
