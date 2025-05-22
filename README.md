@@ -10,6 +10,7 @@ CLI for reservation of desks via signin app API
  - [cancel booking](#cancel-booking)
  - [list free spaces](#list-free-spaces-for-a-given-date)
  - [list bookings](#list-bookings-up-to-a-given-date)
+ - [attendance summary](#attendance-summary)
  - [config](#config)
     - [bearer](#config-bearer)
 
@@ -82,6 +83,25 @@ samples
 ```
 signin list-bookings 20230524          // list bookings from now until  May 24th, 2023
 signin lb 20230601                     // list bookings from now until June 1st, 2023
+```
+[back to top](#signin)
+
+
+### attendance summary
+Get the attendance summary for the previous wees
+
+command
+```
+signin attendance <number-of-weeks>
+signin a <number-of-weeks>
+```
+ - number-of-weeks : number of weeks to get the summary for. Default is 12
+
+samples
+```
+signin attendance 4 // attendancde summary for the last 4 weeks
+signin a 4          // attendancde summary for the last 4 weeks
+signin a            // attendancde summary for the last 12 weeks
 ```
 [back to top](#signin)
 
