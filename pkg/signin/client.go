@@ -14,6 +14,8 @@ type Client interface {
 		resp ListBookingsRespnse, err error)
 	ListFreeSpaces(ctx context.Context, req ListFreeSpacesRequest) (
 		resp ListFreeSpacesResponse, err error)
+	Attendance(ctx context.Context, req AttendanceRequest) (
+		resp AttendanceResponse, err error)
 }
 
 type client struct {
@@ -30,6 +32,7 @@ var (
 	listBookingsUrl   string = fmt.Sprintf("%s/api/mobile/spaces/bookings", baseURL)
 	listFreeSpacesUrl string = fmt.Sprintf("%s/api/mobile/spaces/34098/"+
 		"search?occupancy=1", baseURL)
+	calendarUrl string = fmt.Sprintf("%s/api/mobile/calendar", baseURL)
 )
 
 func NewClient(bearer string) Client {

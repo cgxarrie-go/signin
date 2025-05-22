@@ -15,6 +15,8 @@ type Service interface {
 	ListBookings(ctx context.Context, req ListBookingsquest) (
 		resp ListBookingsResponse, err error)
 	GetSpaceIDs(ctx context.Context) (err error)
+	Attendance(ctx context.Context, req AttendanceRequest) (
+		resp AttendanceResponse, err error)
 }
 
 // service
