@@ -34,7 +34,7 @@ func (c client) ListFreeSpaces(ctx context.Context, req ListFreeSpacesRequest) (
 		Do()
 
 	if err != nil {
-		return resp, fmt.Errorf("calling cancel booking: %w", err)
+		return resp, fmt.Errorf("calling list free spaces: %w", err)
 	}
 
 	return resp, nil

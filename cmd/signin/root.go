@@ -25,6 +25,7 @@ func init() {
 	rootCmd.AddCommand(cancelBooking)
 	rootCmd.AddCommand(listFreeSpacesCmd)
 	rootCmd.AddCommand(listBookingsCmd)
+	rootCmd.AddCommand(attendanceCmd)
 }
 
 // Execute starts the CLI execution
