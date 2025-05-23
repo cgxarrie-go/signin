@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/cgxarrie-go/signin/config"
 	"github.com/cgxarrie-go/signin/pkg/signin"
 )
 
@@ -20,17 +21,21 @@ type AttendanceResponse struct {
 }
 
 type AttendanceResponseItem struct {
-	RelativeWeek     int
-	WeekStartDate    time.Time
-	WeekEndDate      time.Time
-	Week             string
-	NumberOfBookings int
-	NumberOfVisits   int
+	RelativeWeek        int
+	WeekStartDate       time.Time
+	WeekEndDate         time.Time
+	Week                string
+	WorkingDays         int
+	Bookings            int
+	Visits              int
+	VisitsPerWorkingDay float64
 }
 
 type AttendanceSummary struct {
-	AverageVisitsPerWeek   float64
-	AverageBookingsPerWeek float64
+	WorkingDays   int
+	Visits        int
+	Bookings      int
+	AvgOfficeTime float64
 }
 
 // BookSpace book a desk
@@ -62,14 +67,16 @@ func (s service) Attendance(ctx context.Context, req AttendanceRequest) (
 	resp = AttendanceResponse{
 		Items: make(map[int]AttendanceResponseItem),
 		Summary: AttendanceSummary{
-			AverageVisitsPerWeek:   0,
-			AverageBookingsPerWeek: 0,
+			WorkingDays:   0,
+			Visits:        0,
+			Bookings:      0,
+			AvgOfficeTime: 0,
 		},
 	}
 
+	ttlWorkingDays := 0
 	ttlVisits := 0
 	ttlBookings := 0
-	ttlitems := 0
 
 	for i := 0; i < req.NumberOfWeeks; i++ {
 		weekStart := currentMonday.AddDate(0, 0, -7*(req.NumberOfWeeks-i-1))
@@ -85,26 +92,51 @@ func (s service) Attendance(ctx context.Context, req AttendanceRequest) (
 
 		bookings := 0
 		visits := 0
+		workingDays := 0
 		for d := 0; d < 7; d++ {
 			day := weekStart.AddDate(0, 0, d)
+			if s.isWorkingDay(day) {
+				workingDays++
+			}
+
 			dayKey := day.Format("2006-01-02")
 			if data, ok := clientResponse[dayKey]; ok {
 				bookings += len(data.Bookings)
 				visits += len(data.Visits)
 			}
 		}
-		item.NumberOfBookings = bookings
-		ttlBookings += bookings
-		item.NumberOfVisits = visits
-		ttlVisits += visits
+		item.Bookings = bookings
+		item.Visits = visits
+		item.WorkingDays = workingDays
+		if workingDays > 0 {
+			item.VisitsPerWorkingDay = float64(visits) / float64(workingDays)
+		}
 		resp.Items[-i] = item
-		ttlitems++
+		ttlVisits += visits
+		ttlBookings += bookings
+		ttlWorkingDays += workingDays
 	}
 
-	if ttlitems > 0 {
-		resp.Summary.AverageVisitsPerWeek = float64(ttlVisits) / float64(ttlitems)
-		resp.Summary.AverageBookingsPerWeek = float64(ttlBookings) / float64(ttlitems)
+	if len(resp.Items) > 0 {
+		resp.Summary.WorkingDays = ttlWorkingDays
+		resp.Summary.Visits = ttlVisits
+		resp.Summary.Bookings = ttlBookings
+		resp.Summary.AvgOfficeTime = float64(ttlVisits) / float64(ttlWorkingDays)
 	}
 
 	return resp, nil
+}
+
+func (s service) isWorkingDay(day time.Time) bool {
+	// Check if the day is a weekend
+	if day.Weekday() == time.Saturday || day.Weekday() == time.Sunday {
+		return false
+	}
+
+	_, ok := config.Instance().AttendanceFreeDays[day.Format("2006-01-02")]
+	if ok {
+		return false
+	}
+
+	return true
 }

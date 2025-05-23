@@ -30,8 +30,7 @@
             "env": {},
             "cwd": "${workspaceRoot}",
             "args": [
-                "a",
-                "7"
+                "a"
             ]
         },
     ]
