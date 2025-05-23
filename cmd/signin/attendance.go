@@ -19,7 +19,7 @@ var attendanceCmd = &cobra.Command{
 	Short:   "attendance per week",
 	Example: fmt.Sprintf("signin attendance <NumerOfWeeks>\n" +
 		"signin attendance 6\n" +
-		"signin b 6"),
+		"signin a 6"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		ctx := context.Background()
