@@ -3,8 +3,13 @@
 CLI for reservation of desks via signin app API
 (https://companion.signin.app/)
 
+## Installation
 
-## commands
+```
+ go install github.com/cgxarrie-go/signin
+```
+
+## Usage
 
  - [book](#book)
  - [cancel booking](#cancel-booking)
