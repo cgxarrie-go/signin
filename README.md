@@ -107,6 +107,8 @@ samples
 signin attendance 4 // attendancde summary for the last 4 weeks
 signin a 4          // attendancde summary for the last 4 weeks
 signin a            // attendancde summary for the last 12 weeks
+
+signin a -f         // list attendancde free days for the las 100 days
 ```
 [back to top](#signin)
 
