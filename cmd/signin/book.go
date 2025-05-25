@@ -20,8 +20,11 @@ var bookCmd = &cobra.Command{
 	Aliases: []string{"b"},
 	Short:   "book a desk",
 	Example: fmt.Sprintf("signin book <DeskNumber> <Date YYYYMMDD> <Date YYYYMMDD> ...\n" +
+		"signin book <DeskNumber> <number-of-consecutive-days> <start-date YYYYMMDD>\n" +
 		"signin book 59 20230524 20230525 ...\n" +
-		"signin b 59 20230524 20230525 ..."),
+		"signin b 59 20230524 20230525 ...\n" +
+		"signin book 59 3 20230524\n" +
+		"signin b 59 3 20230524\n"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		ctx := context.Background()

@@ -32,7 +32,7 @@ var (
 type config struct {
 	Bearer string
 	Desks
-	AttendanceFreeDays map[string]bool
+	AttendanceFreeDays map[string]string
 }
 
 type Desks map[int]string
