@@ -45,3 +45,11 @@ type Attendance struct {
 	Weeks   map[int]AttendanceWeek
 	Summary AttendanceSummary
 }
+
+type AttendanceFreeDay struct {
+	Date   time.Time
+	Reason string
+}
+type AttendanceFreeDays struct {
+	FreeDays []AttendanceFreeDay
+}

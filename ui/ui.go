@@ -124,3 +124,24 @@ func (ui ui) PrintAttendance(attendance Attendance) {
 	fmt.Printf("Avg Office Time: %.2f%%\n", attendance.Summary.AvgOfficeTime)
 	fmt.Println(line)
 }
+
+func (ui ui) PrintAttendanceFreeDays(days AttendanceFreeDays) {
+	titleFormat := "%" + fmt.Sprintf("%d", dateColLength) + "s " +
+		"| %-" + fmt.Sprintf("%d", idColLength) + "s "
+
+	title := fmt.Sprintf(titleFormat, "Date", "Reason")
+	line := strings.Repeat("-", len(title)+5)
+
+	rowFormat := "%" + fmt.Sprintf("%d", dateColLength) + "v " +
+		"| %-" + fmt.Sprintf("%d", idColLength) + "s "
+
+	fmt.Println(title)
+	fmt.Println(line)
+
+	for _, b := range days.FreeDays {
+		info := fmt.Sprintf(rowFormat, b.Date.Format(dateFormat), b.Reason)
+		fmt.Println(info)
+	}
+
+	fmt.Println(line)
+}
