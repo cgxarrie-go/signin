@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/spf13/cobra"
 
@@ -12,6 +13,8 @@ import (
 	"github.com/cgxarrie-go/signin/pkg/signin"
 	"github.com/cgxarrie-go/signin/ui"
 )
+
+var listFree bool
 
 var attendanceCmd = &cobra.Command{
 	Use:     "attendance",
@@ -22,57 +25,90 @@ var attendanceCmd = &cobra.Command{
 		"signin a 6"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
-		ctx := context.Background()
-
-		client := signin.NewClient(config.Instance().Bearer)
-		svc := service.New(client)
-
-		weeks, err := parseAttendanceArgs(args)
-		if err != nil {
-			return err
+		if listFree {
+			return execAttendanceFreeDaysList()
 		}
 
-		req := service.AttendanceRequest{
-			NumberOfWeeks: weeks,
-		}
+		return execAttendanceReport(args)
 
-		resp, err := svc.Attendance(ctx, req)
-		if err != nil {
-			return fmt.Errorf("calling service BookSpace: %w", err)
-		}
-
-		attendanceWeeks := map[int]ui.AttendanceWeek{}
-		for _, item := range resp.Items {
-			attendanceWeekKey := item.RelativeWeek + len(resp.Items) - 1
-			week := ui.AttendanceWeek{
-				RelativeWeek:        item.RelativeWeek,
-				WeekStartDate:       item.WeekStartDate,
-				WeekEndDate:         item.WeekEndDate,
-				Week:                item.Week,
-				WorkingDays:         item.WorkingDays,
-				Bookings:            item.Bookings,
-				Visits:              item.Visits,
-				VisitsPerWorkingDay: 100 * item.VisitsPerWorkingDay,
-			}
-
-			attendanceWeeks[attendanceWeekKey] = week
-		}
-
-		attendanceSummary := ui.AttendanceSummary{
-			WorkingDays:   resp.Summary.WorkingDays,
-			Visits:        resp.Summary.Visits,
-			AvgOfficeTime: 100 * resp.Summary.AvgOfficeTime,
-		}
-
-		attendance := ui.Attendance{
-			Weeks:   attendanceWeeks,
-			Summary: attendanceSummary,
-		}
-
-		ui.Instance().PrintAttendance(attendance)
-
-		return nil
 	},
+}
+
+func init() {
+	attendanceCmd.Flags().BoolVarP(&listFree, "listfree", "f", false, "List free attendance days")
+}
+
+func execAttendanceReport(args []string) error {
+	ctx := context.Background()
+
+	client := signin.NewClient(config.Instance().Bearer)
+	svc := service.New(client)
+
+	weeks, err := parseAttendanceArgs(args)
+	if err != nil {
+		return err
+	}
+
+	req := service.AttendanceRequest{
+		NumberOfWeeks: weeks,
+	}
+
+	resp, err := svc.Attendance(ctx, req)
+	if err != nil {
+		return fmt.Errorf("calling service BookSpace: %w", err)
+	}
+
+	attendanceWeeks := map[int]ui.AttendanceWeek{}
+	for _, item := range resp.Items {
+		attendanceWeekKey := item.RelativeWeek + len(resp.Items) - 1
+		week := ui.AttendanceWeek{
+			RelativeWeek:        item.RelativeWeek,
+			WeekStartDate:       item.WeekStartDate,
+			WeekEndDate:         item.WeekEndDate,
+			Week:                item.Week,
+			WorkingDays:         item.WorkingDays,
+			Bookings:            item.Bookings,
+			Visits:              item.Visits,
+			VisitsPerWorkingDay: 100 * item.VisitsPerWorkingDay,
+		}
+
+		attendanceWeeks[attendanceWeekKey] = week
+	}
+
+	attendanceSummary := ui.AttendanceSummary{
+		WorkingDays:   resp.Summary.WorkingDays,
+		Visits:        resp.Summary.Visits,
+		AvgOfficeTime: 100 * resp.Summary.AvgOfficeTime,
+	}
+
+	attendance := ui.Attendance{
+		Weeks:   attendanceWeeks,
+		Summary: attendanceSummary,
+	}
+
+	ui.Instance().PrintAttendance(attendance)
+
+	return nil
+}
+
+func execAttendanceFreeDaysList() error {
+
+	days := ui.AttendanceFreeDays{}
+
+	cfg := config.Instance().AttendanceFreeDays
+
+	for i := -100; i <= 0; i++ {
+		day := time.Now().AddDate(0, 0, i)
+		if item, ok := cfg[day.Format("2006-01-02")]; ok {
+			days.FreeDays = append(days.FreeDays, ui.AttendanceFreeDay{
+				Date:   day,
+				Reason: item,
+			})
+		}
+	}
+
+	ui.Instance().PrintAttendanceFreeDays(days)
+	return nil
 }
 
 func parseAttendanceArgs(args []string) (weeks int, err error) {
