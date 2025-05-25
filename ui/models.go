@@ -25,17 +25,20 @@ type Desk struct {
 }
 
 type AttendanceWeek struct {
-	RelativeWeek     int
-	WeekStartDate    time.Time
-	WeekEndDate      time.Time
-	Week             string
-	NumberOfBookings int
-	NumberOfVisits   int
+	RelativeWeek        int
+	WeekStartDate       time.Time
+	WeekEndDate         time.Time
+	Week                string
+	WorkingDays         int
+	Bookings            int
+	Visits              int
+	VisitsPerWorkingDay float64
 }
 
 type AttendanceSummary struct {
-	AverageVisitsPerWeek   float64
-	AverageBookingsPerWeek float64
+	WorkingDays   int
+	Visits        int
+	AvgOfficeTime float64
 }
 
 type Attendance struct {

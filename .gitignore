@@ -7,7 +7,7 @@
 *.dll
 *.so
 *.dylib
-*.gonfig
+*.config
 
 # Test binary, built with `go test -c`
 *.test

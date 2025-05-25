@@ -21,7 +21,7 @@
             ]
         },
         {
-            "name": "Launch attendamce",
+            "name": "Launch attendamce report",
             "type": "go",
             "request": "launch",
             "mode": "debug",
@@ -30,8 +30,24 @@
             "env": {},
             "cwd": "${workspaceRoot}",
             "args": [
-                "a",
-                "7"
+                "a"
+            ]
+        },
+        {
+            "name": "Launch config afd",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceRoot}",
+            "buildFlags": "-race",
+            "env": {},
+            "cwd": "${workspaceRoot}",
+            "args": [
+                "config",
+                "afd",
+                "20240219",
+                "4",
+                "testing-config-afd"
             ]
         },
     ]

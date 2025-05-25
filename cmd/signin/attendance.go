@@ -19,7 +19,7 @@ var attendanceCmd = &cobra.Command{
 	Short:   "attendance per week",
 	Example: fmt.Sprintf("signin attendance <NumerOfWeeks>\n" +
 		"signin attendance 6\n" +
-		"signin b 6"),
+		"signin a 6"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		ctx := context.Background()
@@ -45,20 +45,25 @@ var attendanceCmd = &cobra.Command{
 		for _, item := range resp.Items {
 			attendanceWeekKey := item.RelativeWeek + len(resp.Items) - 1
 			week := ui.AttendanceWeek{
-				RelativeWeek:     item.RelativeWeek,
-				WeekStartDate:    item.WeekStartDate,
-				WeekEndDate:      item.WeekEndDate,
-				Week:             item.Week,
-				NumberOfBookings: item.NumberOfBookings,
-				NumberOfVisits:   item.NumberOfVisits,
+				RelativeWeek:        item.RelativeWeek,
+				WeekStartDate:       item.WeekStartDate,
+				WeekEndDate:         item.WeekEndDate,
+				Week:                item.Week,
+				WorkingDays:         item.WorkingDays,
+				Bookings:            item.Bookings,
+				Visits:              item.Visits,
+				VisitsPerWorkingDay: 100 * item.VisitsPerWorkingDay,
 			}
+
 			attendanceWeeks[attendanceWeekKey] = week
 		}
 
 		attendanceSummary := ui.AttendanceSummary{
-			AverageVisitsPerWeek:   resp.Summary.AverageVisitsPerWeek,
-			AverageBookingsPerWeek: resp.Summary.AverageBookingsPerWeek,
+			WorkingDays:   resp.Summary.WorkingDays,
+			Visits:        resp.Summary.Visits,
+			AvgOfficeTime: 100 * resp.Summary.AvgOfficeTime,
 		}
+
 		attendance := ui.Attendance{
 			Weeks:   attendanceWeeks,
 			Summary: attendanceSummary,

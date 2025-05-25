@@ -3,7 +3,6 @@ package config
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sync"
@@ -33,6 +32,7 @@ var (
 type config struct {
 	Bearer string
 	Desks
+	AttendanceFreeDays map[string]string
 }
 
 type Desks map[int]string
@@ -49,7 +49,7 @@ func (c *config) Load() (err error) {
 			"Use config command to add configuration")
 	}
 
-	file, err := ioutil.ReadFile(fileName)
+	file, err := os.ReadFile(fileName)
 	if err != nil {
 		return fmt.Errorf("Error loading config file: %s", err.Error())
 
