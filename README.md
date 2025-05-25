@@ -127,5 +127,22 @@ signin config bearer <bearer>
 samples
 ```
 signin config bearer my-app-bearer          // set the bearer as my-app-bearer
-[back to top](#signin)
 ```
+[back to top](#signin)
+
+### config atendance free days
+Set the days where attendance is not mandatory
+command
+```
+signin config attendance-free-days <start-day YYYYMMDD> <number-od-days> <reason>
+signin config afd <start-day YYYYMMDD> <number-od-days> <reason>
+
+```
+    - start-day : date when the attendance free days start (e.g. 20230601)
+    - number-of-days : number of days where attendance is not mandatory
+    - reason : reason for the attendance free days (e.g. "Public holiday", "Vacation", "Sick leave")
+
+samples
+```
+signin config attendance-free-days 20230601 5 "Public holiday" // set the attendance free days starting June 1st, 2023 for 5 days with reason "Public holiday"
+signin config afd 20230601 5 "Vacation" // set the attendance free days starting June 1st, 2023 for 5 days with reason "Vacation"
