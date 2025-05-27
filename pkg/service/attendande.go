@@ -128,6 +128,10 @@ func (s service) Attendance(ctx context.Context, req AttendanceRequest) (
 }
 
 func (s service) isWorkingDay(day time.Time) bool {
+	if day.After(time.Now().Truncate(24 * time.Hour)) {
+		return false
+	}
+
 	// Check if the day is a weekend
 	if day.Weekday() == time.Saturday || day.Weekday() == time.Sunday {
 		return false
