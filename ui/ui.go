@@ -121,7 +121,8 @@ func (ui ui) PrintAttendance(attendance Attendance) {
 	fmt.Println(line)
 	fmt.Printf("Total Working Days: %d\n", attendance.Summary.WorkingDays)
 	fmt.Printf("Total Visits: %d\n", attendance.Summary.Visits)
-	fmt.Printf("Avg Office Time: %.2f%%\n", attendance.Summary.AvgOfficeTime)
+	fmt.Printf("Avg Office Time (to day): %.2f%%\n", attendance.Summary.AvgOfficeTimeToDay)
+	fmt.Printf("Avg Office Time (to week): %.2f%%\n", attendance.Summary.AvgOfficeTimeToWeek)
 	fmt.Println(line)
 }
 

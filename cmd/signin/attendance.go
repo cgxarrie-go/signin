@@ -76,9 +76,10 @@ func execAttendanceReport(args []string) error {
 	}
 
 	attendanceSummary := ui.AttendanceSummary{
-		WorkingDays:   resp.Summary.WorkingDays,
-		Visits:        resp.Summary.Visits,
-		AvgOfficeTime: 100 * resp.Summary.AvgOfficeTime,
+		WorkingDays:         resp.Summary.WorkingDays,
+		Visits:              resp.Summary.Visits,
+		AvgOfficeTimeToDay:  100 * resp.Summary.AvgOfficeTimeToDay,
+		AvgOfficeTimeToWeek: 100 * resp.Summary.AvgOfficeTimeToWeek,
 	}
 
 	attendance := ui.Attendance{

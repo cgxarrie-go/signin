@@ -36,9 +36,10 @@ type AttendanceWeek struct {
 }
 
 type AttendanceSummary struct {
-	WorkingDays   int
-	Visits        int
-	AvgOfficeTime float64
+	WorkingDays         int
+	Visits              int
+	AvgOfficeTimeToDay  float64
+	AvgOfficeTimeToWeek float64
 }
 
 type Attendance struct {
