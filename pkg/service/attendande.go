@@ -32,10 +32,11 @@ type AttendanceResponseItem struct {
 }
 
 type AttendanceSummary struct {
-	WorkingDays   int
-	Visits        int
-	Bookings      int
-	AvgOfficeTime float64
+	WorkingDays         int
+	Visits              int
+	Bookings            int
+	AvgOfficeTimeToDay  float64
+	AvgOfficeTimeToWeek float64
 }
 
 // BookSpace book a desk
@@ -67,14 +68,15 @@ func (s service) Attendance(ctx context.Context, req AttendanceRequest) (
 	resp = AttendanceResponse{
 		Items: make(map[int]AttendanceResponseItem),
 		Summary: AttendanceSummary{
-			WorkingDays:   0,
-			Visits:        0,
-			Bookings:      0,
-			AvgOfficeTime: 0,
+			WorkingDays:        0,
+			Visits:             0,
+			Bookings:           0,
+			AvgOfficeTimeToDay: 0,
 		},
 	}
 
-	ttlWorkingDays := 0
+	ttlWorkingDaysToDay := 0
+	ttlWorkingDaysToWeek := 0
 	ttlVisits := 0
 	ttlBookings := 0
 
@@ -92,11 +94,15 @@ func (s service) Attendance(ctx context.Context, req AttendanceRequest) (
 
 		bookings := 0
 		visits := 0
-		workingDays := 0
+		workingDaysWeekToDay := 0
+		workingDaysWholeWeek := 0
 		for d := 0; d < 7; d++ {
 			day := weekStart.AddDate(0, 0, d)
 			if s.isWorkingDay(day) {
-				workingDays++
+				if !day.After(time.Now().Truncate(24 * time.Hour)) {
+					workingDaysWeekToDay++
+				}
+				workingDaysWholeWeek++
 			}
 
 			dayKey := day.Format("2006-01-02")
@@ -107,30 +113,29 @@ func (s service) Attendance(ctx context.Context, req AttendanceRequest) (
 		}
 		item.Bookings = bookings
 		item.Visits = visits
-		item.WorkingDays = workingDays
-		if workingDays > 0 {
-			item.VisitsPerWorkingDay = float64(visits) / float64(workingDays)
+		item.WorkingDays = workingDaysWeekToDay
+		if workingDaysWeekToDay > 0 {
+			item.VisitsPerWorkingDay = float64(visits) / float64(workingDaysWeekToDay)
 		}
 		resp.Items[-i] = item
 		ttlVisits += visits
 		ttlBookings += bookings
-		ttlWorkingDays += workingDays
+		ttlWorkingDaysToDay += workingDaysWeekToDay
+		ttlWorkingDaysToWeek += workingDaysWholeWeek
 	}
 
 	if len(resp.Items) > 0 {
-		resp.Summary.WorkingDays = ttlWorkingDays
+		resp.Summary.WorkingDays = ttlWorkingDaysToDay
 		resp.Summary.Visits = ttlVisits
 		resp.Summary.Bookings = ttlBookings
-		resp.Summary.AvgOfficeTime = float64(ttlVisits) / float64(ttlWorkingDays)
+		resp.Summary.AvgOfficeTimeToDay = float64(ttlVisits) / float64(ttlWorkingDaysToDay)
+		resp.Summary.AvgOfficeTimeToWeek = float64(ttlVisits) / float64(ttlWorkingDaysToWeek)
 	}
 
 	return resp, nil
 }
 
 func (s service) isWorkingDay(day time.Time) bool {
-	if day.After(time.Now().Truncate(24 * time.Hour)) {
-		return false
-	}
 
 	// Check if the day is a weekend
 	if day.Weekday() == time.Saturday || day.Weekday() == time.Sunday {
