@@ -107,8 +107,12 @@ func (s service) Attendance(ctx context.Context, req AttendanceRequest) (
 
 			dayKey := day.Format("2006-01-02")
 			if data, ok := clientResponse[dayKey]; ok {
-				bookings += len(data.Bookings)
-				visits += len(data.Visits)
+				if len(data.Bookings) > 0 {
+					bookings++
+				}
+				if len(data.Visits) > 0 {
+					visits++
+				}
 			}
 		}
 		item.Bookings = bookings
